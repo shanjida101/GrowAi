@@ -3,7 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { api, safe } from "@/lib/api";
 import { exportCsv, parseCsv } from "@/lib/csv";
-import AddProductModal, { Product } from "@/components/modals/AddProductModal";
+
+import AddProductModal from "@/components/modals/AddProductModal";
+
+// Add this local type (matches your backend fields)
+type Product = {
+  id: number;
+  sku: string;
+  name: string;
+  category: string;
+  stock: number;
+  price: number;
+  reorder_point: number;
+};
+
 import {
   Plus, Upload, Download, Search, Filter, AlertTriangle, RefreshCcw,
   ArrowUpDown, Pencil, Trash2
