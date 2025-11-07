@@ -1,34 +1,30 @@
+# app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.db import Base, engine
-from app import models
-from app.routers import products, dues, forecast, reports, sales  # ← ensure sales is imported
+from app.routers import products, sales, dues, forecast, reports
 
-app = FastAPI()
+Base.metadata.create_all(bind=engine)
 
-# 🔐 CORS – allow your LAN dev origins and make preflight succeed
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://192.168.0.103:3000", 
-       "https://grow-ai-u6gh.vercel.app",     # ← your device’s frontend URL
-]
+app = FastAPI(title="GrowAI API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # or use allow_origin_regex=".*" for dev
+    allow_origins=[
+        "https://grow-ai-u6gh.vercel.app",  # your Vercel site
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],           # ← allow POST/OPTIONS/etc
-    allow_headers=["*"],           # ← allow Content-Type, etc
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# DB init
-models.Base.metadata.create_all(bind=engine)
+@app.get("/health")
+def health(): return {"ok": True}
 
-# 🔌 Mount all routers (including sales!)
 app.include_router(products.router)
+app.include_router(sales.router)
 app.include_router(dues.router)
 app.include_router(forecast.router)
 app.include_router(reports.router)
-app.include_router(sales.router)    # ← do NOT forget this
