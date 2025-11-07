@@ -21,13 +21,13 @@ async function request<T>(path: string, init?: RequestInit & { body?: Json | str
   const txt = await res.text();
   return txt ? (JSON.parse(txt) as T) : (undefined as unknown as T);
 }
-
 export const api = {
-  get:  <T>(p: string) => request<T>(p),
-  post: <T>(p: string, body?: unknown) => request<T>(p, { method: "POST", body: body as any }),
-  patch:<T>(p: string, body?: unknown) => request<T>(p, { method: "PATCH", body: body as any }),
+  get: <T>(p: string) => request<T>(p),
+  post: <T>(p: string, body?: unknown) => request<T>(p, { method: "POST", body }),
+  patch:<T>(p: string, body?: unknown) => request<T>(p, { method: "PATCH", body }),
   delete:<T>(p: string) => request<T>(p, { method: "DELETE" }),
 };
+
 
 export async function safe<T>(p: Promise<T>, fallback: T): Promise<T> {
   try { return await p; } catch { return fallback; }
