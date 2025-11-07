@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* subtle gradient page bg */
+body { 
+  background: radial-gradient(1200px 600px at 20% -20%, #111827 0, transparent 60%),
+              radial-gradient(900px 500px at 110% 10%, #0b1220 0, transparent 60%),
+              #0b0d10;
+}
+
