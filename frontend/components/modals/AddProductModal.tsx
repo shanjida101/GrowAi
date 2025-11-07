@@ -11,7 +11,7 @@ export default function AddProductModal({
 }: {
   open: boolean;
   onClose: () => void;
-  onAdded: (p: Product) => void; // <- expects full Product (id present)
+  onAdded: (p: Product) => void;
 }) {
   const [form, setForm] = useState<NewProduct>({
     sku: "",
@@ -26,11 +26,11 @@ export default function AddProductModal({
   async function save() {
     setSaving(true);
     try {
-      // backend must return the created row with a real id
-      const created = await api.post<Product>("/api/v1/products", form);
-      onAdded(created);
+      // IMPORTANT: trailing slash to avoid 307 + failed preflight
+      const created = await api.post<Product>("/api/v1/products/", form);
+      onAdded(created);       // created must include a real `id`
       onClose();
-      // reset for next open
+      // reset for next time
       setForm({
         sku: "",
         name: "",
@@ -76,7 +76,9 @@ export default function AddProductModal({
                   setForm((s) => ({
                     ...s,
                     [f.k]:
-                      f.type === "number" ? Number(e.target.value) : e.target.value,
+                      f.type === "number"
+                        ? Number(e.target.value || 0)
+                        : e.target.value,
                   }))
                 }
                 type={f.type || "text"}
